@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>NEXORA FORM</title>
+<link rel="icon" href="icon-192.png" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: #0A0912;
+    font-family: 'Inter', sans-serif;
+    color: #F2F0F7;
+    position: relative;
+    overflow-x: hidden;
+    padding: 28px 18px 60px;
+  }
+  ::placeholder { color: #6B6779; }
+  .glow {
+    position: absolute;
+    top: -120px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 480px;
+    height: 320px;
+    background: radial-gradient(closest-side, rgba(139,92,246,0.25), transparent);
+    filter: blur(10px);
+    pointer-events: none;
+  }
+  header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 480px;
+    margin: 0 auto 28px;
+  }
+  .mark {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    background: #15131F;
+    border: 1px solid #262233;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .wordmark { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 20px; }
+  .wordmark-accent {
+    background: linear-gradient(90deg, #8B5CF6, #22D3EE);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .tagline { font-size: 13px; color: #9691A8; margin-top: 2px; }
+  main { position: relative; max-width: 480px; margin: 0 auto; }
+  .card {
+    background: #15131F;
+    border: 1px solid #262233;
+    border-radius: 18px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+  }
+  .field-row { display: flex; justify-content: space-between; align-items: baseline; margin-top: 16px; }
+  label.field-label { font-size: 13px; font-weight: 600; color: #C9C5D6; }
+  .hint { font-size: 12px; color: #6B6779; }
+  .dropzone {
+    margin-top: 8px;
+    display: block;
+    width: 100%;
+    border: 1.5px dashed #2A2638;
+    border-radius: 14px;
+    padding: 26px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+    background: #0F0D17;
+  }
+  .dropzone.drag { border-color: #8B5CF6; background: rgba(139,92,246,0.06); }
+  .hidden-input {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+  .upload-icon-wrap {
+    width: 44px; height: 44px; border-radius: 12px; background: #181425;
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;
+  }
+  .upload-title { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; margin-bottom: 4px; }
+  .upload-sub { font-size: 12.5px; color: #6B6779; }
+  .preview-wrap { border-radius: 10px; overflow: hidden; }
+  .preview-img { width: 100%; max-height: 220px; object-fit: cover; display: block; border-radius: 10px; }
+  .preview-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 12px; }
+  .file-name { color: #9691A8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
+  .change-link { color: #22D3EE; font-weight: 600; }
+  textarea {
+    background: #0F0D17; border: 1px solid #2A2638; border-radius: 12px;
+    padding: 12px 14px; color: #F2F0F7; font-size: 14.5px; font-family: 'Inter', sans-serif;
+    resize: vertical; outline: none; line-height: 1.5; margin-top: 8px; width: 100%;
+  }
+  .chips-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .chip {
+    background: #0F0D17; border: 1px solid #2A2638; border-radius: 999px;
+    padding: 9px 16px; color: #C9C5D6; font-size: 13.5px; font-weight: 600;
+    font-family: 'Inter', sans-serif; cursor: pointer;
+  }
+  .chip.active {
+    background: linear-gradient(90deg, rgba(139,92,246,0.18), rgba(34,211,238,0.18));
+    border: 1px solid #8B5CF6; color: #F2F0F7;
+  }
+  .msg-box { margin-top: 16px; border-radius: 10px; padding: 10px 12px; font-size: 13.5px; display: none; }
+  .msg-box.error { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: #F87171; }
+  .msg-box.success { background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3); color: #34D399; }
+  button[type="submit"] {
+    margin-top: 20px; background: linear-gradient(90deg, #8B5CF6, #22D3EE);
+    border: none; border-radius: 12px; padding: 13px 0; color: #0A0912;
+    font-weight: 700; font-size: 15px; font-family: 'Space Grotesk', sans-serif; cursor: pointer;
+  }
+  button[type="submit"]:disabled { opacity: 0.6; cursor: default; }
+  .progress-wrap { margin-top: 12px; height: 6px; border-radius: 999px; background: #0F0D17; overflow: hidden; display: none; }
+  .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #8B5CF6, #22D3EE); transition: width .15s; }
+</style>
+</head>
+<body>
+  <div class="glow"></div>
+
+  <header>
+    <div class="mark">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L14.2 9.2L21 12L14.2 14.8L12 22L9.8 14.8L3 12L9.8 9.2L12 2Z" fill="url(#g1)" />
+        <defs>
+          <linearGradient id="g1" x1="3" y1="2" x2="21" y2="22">
+            <stop offset="0" stop-color="#8B5CF6" />
+            <stop offset="1" stop-color="#22D3EE" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <div>
+      <div class="wordmark">NEXORA <span class="wordmark-accent">FORM</span></div>
+      <div class="tagline">Image upload karo, prompt likho, category chuno, publish karo</div>
+    </div>
+  </header>
+
+  <main>
+    <form class="card" id="publishForm">
+      <div class="field-row">
+        <label class="field-label">Cover image</label>
+        <span class="hint">Tap ya drop karein</span>
+      </div>
+
+      <label for="coverInput" class="dropzone" id="dropzone">
+        <input type="file" id="coverInput" class="hidden-input" accept="image/png,image/jpeg,image/jpg,image/webp" />
+        <div id="dropzoneEmpty">
+          <div class="upload-icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M12 16V4M12 4L7 9M12 4l5 5" stroke="#22D3EE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke="#22D3EE" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </div>
+          <div class="upload-title">Image choose karein</div>
+          <div class="upload-sub">JPG, PNG ya WEBP · turant upload hoti hai</div>
+        </div>
+        <div id="dropzonePreview" style="display:none;" class="preview-wrap">
+          <img id="previewImg" class="preview-img" />
+          <div class="preview-footer">
+            <span class="file-name" id="fileNameLabel"></span>
+            <span class="change-link">Change</span>
+          </div>
+        </div>
+      </label>
+
+      <label class="field-label" style="margin-top:20px; display:block;" for="promptInput">Prompt</label>
+      <textarea id="promptInput" rows="5" placeholder="Look, style, lighting, details likhein..."></textarea>
+
+      <div class="field-row">
+        <label class="field-label">Category</label>
+        <span class="hint">Required</span>
+      </div>
+      <div class="chips-wrap" id="chipsWrap">
+        <button type="button" class="chip" data-cat="New">New</button>
+        <button type="button" class="chip" data-cat="Trending">Trending</button>
+        <button type="button" class="chip" data-cat="Videos">Videos</button>
+        <button type="button" class="chip" data-cat="Kids">Kids</button>
+        <button type="button" class="chip" data-cat="Games">Games</button>
+        <button type="button" class="chip" data-cat="DP Maker">DP Maker</button>
+        <button type="button" class="chip" data-cat="Sticker Maker">Sticker Maker</button>
+      </div>
+
+      <div class="progress-wrap" id="progressWrap"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="msg-box error" id="errorBox"></div>
+      <div class="msg-box success" id="successBox">Published ✓ — app mein show ho jayega</div>
+
+      <button type="submit" id="submitBtn">Publish prompt</button>
+    </form>
+  </main>
+
+<script type="module">
+  import { db } from "./firebase-config.js";
+  import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+  const coverInput = document.getElementById('coverInput');
+  const dropzone = document.getElementById('dropzone');
+  const dropzoneEmpty = document.getElementById('dropzoneEmpty');
+  const dropzonePreview = document.getElementById('dropzonePreview');
+  const previewImg = document.getElementById('previewImg');
+  const fileNameLabel = document.getElementById('fileNameLabel');
+  const promptInput = document.getElementById('promptInput');
+  const chipsWrap = document.getElementById('chipsWrap');
+  const errorBox = document.getElementById('errorBox');
+  const successBox = document.getElementById('successBox');
+  const submitBtn = document.getElementById('submitBtn');
+  const progressWrap = document.getElementById('progressWrap');
+  const progressBar = document.getElementById('progressBar');
+  const form = document.getElementById('publishForm');
+
+  let selectedFile = null;
+  let selectedCategory = null;
+
+  function resizeImage(file, maxDim = 700, quality = 0.6) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) { height = Math.round(height * maxDim / width); width = maxDim; }
+            else { width = Math.round(width * maxDim / height); height = maxDim; }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width; canvas.height = height;
+          canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = reject;
+        img.src = reader.result;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  coverInput.addEventListener('change', async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (!/^image\/(jpeg|png|webp|jpg)$/.test(file.type)) {
+      showError('Sirf JPG, PNG ya WEBP image allowed hai.');
+      return;
+    }
+    try {
+      const dataUrl = await resizeImage(file);
+      selectedFile = dataUrl;
+      previewImg.src = dataUrl;
+      fileNameLabel.textContent = file.name;
+      dropzoneEmpty.style.display = 'none';
+      dropzonePreview.style.display = 'block';
+      hideMessages();
+    } catch (err) {
+      showError('Image load nahi ho saki. Dobara try karein.');
+    }
+    coverInput.value = '';
+  });
+
+  ['dragover'].forEach(evt => dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.add('drag'); }));
+  ['dragleave', 'drop'].forEach(evt => dropzone.addEventListener(evt, () => dropzone.classList.remove('drag')));
+  dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (file) {
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      coverInput.files = dt.files;
+      coverInput.dispatchEvent(new Event('change'));
+    }
+  });
+
+  chipsWrap.addEventListener('click', (e) => {
+    const btn = e.target.closest('.chip');
+    if (!btn) return;
+    [...chipsWrap.children].forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    selectedCategory = btn.dataset.cat;
+  });
+
+  function showError(msg) {
+    errorBox.textContent = msg;
+    errorBox.style.display = 'block';
+    successBox.style.display = 'none';
+  }
+  function hideMessages() {
+    errorBox.style.display = 'none';
+    successBox.style.display = 'none';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideMessages();
+    if (!selectedFile) { showError('Pehle ek image choose karein.'); return; }
+    const promptText = promptInput.value.trim();
+    if (!promptText) { showError('Prompt likhna zaroori hai.'); return; }
+    if (!selectedCategory) { showError('Category choose karein.'); return; }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Publishing…';
+
+    try {
+      if (selectedFile.length > 900000) {
+        throw new Error('image-too-large');
+      }
+      await addDoc(collection(db, 'prompts'), {
+        prompt: promptText,
+        category: selectedCategory,
+        image: selectedFile,
+        createdAt: serverTimestamp(),
+      });
+
+      successBox.style.display = 'block';
+      form.reset();
+      selectedFile = null;
+      selectedCategory = null;
+      dropzoneEmpty.style.display = 'block';
+      dropzonePreview.style.display = 'none';
+      [...chipsWrap.children].forEach(c => c.classList.remove('active'));
+    } catch (err) {
+      console.error(err);
+      if (err && err.message === 'image-too-large') {
+        showError('Ye image bohot bari hai. Chhoti/zyada compressed image try karein.');
+      } else {
+        const code = (err && err.code) ? err.code : 'unknown';
+        const msg = (err && err.message) ? err.message : String(err);
+        showError('Error [' + code + ']: ' + msg);
+      }
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Publish prompt';
+    }
+  });
+</script>
+</body>
+</html>
