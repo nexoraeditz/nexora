@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.nexoraeditz.twa",
+        "sha256_cert_fingerprints": ["6C:51:0E:69:E8:A4:BB:B7:63:78:0A:60:16:C4:9A:E8:62:E3:70:C1:2B:EB:0E:C3:34:FF:25:94:E0:AD:A1:9D"]
+      }
+    }]
